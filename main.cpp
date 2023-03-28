@@ -26,7 +26,7 @@ public:
 };
 
 Student** add(Student* student, Student** table, int size);
-Student* generate();
+Student* generate(int& random);
 void print(Student** table, int size);
 int hashFunction(Student* student, int size);
 Student** rehash(Student** table, int size);
@@ -35,6 +35,7 @@ void deletee(Student** table, int size);
 int main() {
   srand(time(NULL));
   int size = 100;
+  int random = 0;
   Student** table = new Student*[size];
   
   bool playing = true;
@@ -66,12 +67,14 @@ int main() {
 	int num = 0;
 	cin >> num;
 	cin.ignore();
+	int i = 0;
 	
 	for (int i = 0; i < num; i++) {
-	  Student* newStu = generate();
+	  Student* newStu = generate(random);
 	  
 	  table = add(newStu, table, size);
-	  
+
+	  /*
 	  int collisions = 1;
 	  //Check for collisions in table
 	  for (int i = 0; i < size && collisions < 3; i++) {
@@ -90,6 +93,7 @@ int main() {
 	      table = rehash(table, size);                              
 	    }
 	  }
+	  */
 	}	
       }
 
@@ -111,9 +115,31 @@ int main() {
 	cin.ignore();
 	student->printStu();
 	table = add(student, table, size);
+
+	/*
+	int collisions = 1;
+	//Check for collisions in table                                    
+	for (int i = 0; i < size && collisions < 3; i++) {
+	  collisions = 0;
+	  Student* current = table[i];
+	  if (current!=NULL) {
+	    while (current!=NULL) {
+	      collisions++;
+	      
+	      current = current->next;
+	    }
+	  }
+	  
+	  if (collisions > 3) {
+	    size = size*2;
+	    table = rehash(table, size);
+	  }
+	  
+	}
+	*/
       }
     }
-    
+
     else if (strcmp(command, "print") == false) {
       print(table, size);
     }
@@ -138,6 +164,24 @@ Student** add(Student* student, Student** table, int size) {
   Student* current = table[student->hash];
   int collisions = 1;
 
+  if(current == NULL){
+    
+    table[student->hash] = student;
+  }
+  //if something is already there
+  else if(table[student->hash]!=NULL){
+    
+    
+    while(current->next!=NULL){
+      current = current->next;
+      
+      collisions++;
+      
+    }
+    
+    current->next = student;
+  }
+    /*
   //Check and rehash if needed
   if (current == NULL) {
     table[student->hash] = student;
@@ -149,12 +193,13 @@ Student** add(Student* student, Student** table, int size) {
     }
     current->next = student;
   }
+	    */
   //  cout << "Student added!" << endl;
   return table;  
 }
 
 //Generate random students
-Student* generate() {
+Student* generate(int &random) {
 
   int numLine = 0;
 
@@ -164,10 +209,11 @@ Student* generate() {
   int fRandom = rand()%100;
   ifstream ffile;
   ffile.open("fname.txt");
+  char line [50];
   
   char fvalue[30];
   //Go till random generated line #
-  while (fRandom!=numLine && ffile.getline(fvalue, sizeof(fvalue))) {
+  while (fRandom!=numLine && ffile.getline(fvalue, sizeof(line))) {
     ++numLine;
   }
   if (numLine == fRandom) {
@@ -180,8 +226,9 @@ Student* generate() {
   int lRandom = rand()%100;
   ifstream lfile;
   lfile.open("lname.txt");
+  numLine = 0;
   char lvalue[30];
-  while (lRandom!=numLine && lfile.getline(lvalue, sizeof(lvalue))) {
+  while (lRandom!=numLine && lfile.getline(lvalue, sizeof(line))) {
     ++numLine;
   }
   if (numLine == lRandom) {
@@ -198,7 +245,75 @@ Student* generate() {
 
   student->printStu();
   return student;
-}
+  
+  /*
+  srand(time(NULL));
+    
+  int lineNum = 0;
+
+  int preR = random;
+  while (preR == random) {
+    random = rand() % 1001;
+  }
+  
+  char* fline = new char[50];
+  char* lline = new char[50];
+  //Read in a random line from txt files
+  //Take random first name
+  Student* student = new Student();
+  
+  ifstream ffile;
+  ffile.open("fname.txt");
+  ifstream lfile;
+  lfile.open("lname.txt");
+  
+  while (ffile >> student->fname && lfile >> student->lname) {
+    if (lineNum == random) {
+      break;
+    }
+    lineNum++;
+  }
+  */
+  
+  /*
+  char fvalue[30];
+  //Go till random generated line #
+  while (fRandom!=fLine && ffile.getline(line, sizeof(line))) {
+    ++fLine;
+  }
+  if (fLine == fRandom) {
+    strcpy(student->fname, line);
+  }
+  
+  ffile.close();
+
+  //Take random last name
+  int lRandom = rand()%100;
+  ifstream lfile;
+  lfile.open("lname.txt");
+  char lvalue[30];
+  while (lRandom!=lLine && lfile.getline(lvalue, sizeof(line))) {
+    ++fLine;
+  }
+  if (lLine == lRandom) {
+    strcpy(student->lname, lvalue);
+  }
+  lfile.close();
+
+  
+  
+  //Randomly generate id # and gpa
+  int stuid = rand()%600000;
+  student->id = stuid;
+  float g = rand()&100;
+  float stugpa = float(rand()%5+float(0.01*g));
+  student->gpa = stugpa;
+  student->printStu();
+  
+  
+  return student;
+  */
+  }
 
 void print (Student** table, int size) {
   cout << endl;
