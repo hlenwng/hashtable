@@ -381,6 +381,8 @@ Student** rehash(Student** table, int size) {
     }
   }
   cout << "rehashed!" << endl;
+  //fix? (June 6th, 2023)
+  return newTable;
 }
 
 void deletee(Student** table, int size) {
