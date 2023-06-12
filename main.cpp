@@ -13,13 +13,30 @@
 using namespace std;
 
 struct Student {
-  char* fname = new char[20];
-  char* lname = new char[20];
+  char* fname;
+  char* lname;
   int id;
   float gpa;
   int hash;
-  Student* next = NULL;
+  Student* next;
 public:
+
+  // Constructor
+  Student() {
+    fname = new char[20];
+    lname = new char[20];
+    id = 0;
+    gpa = 0.0f;
+    hash = 0;
+    next = NULL;
+  }
+
+  // Destructor
+  ~Student() {
+    delete[] fname;
+    delete[] lname;
+  }
+  
   void printStu() {
     cout << fname << ", " << lname << ", " << id << ", " << gpa << endl;
   }
@@ -75,7 +92,7 @@ int main() {
 	  table = add(newStu, table, size);
 
 	  /*
-	  int collisions = 1;
+	  int collisions;
 	  //Check for collisions in table
 	  for (int i = 0; i < size && collisions < 3; i++) {
 	    collisions = 0;
@@ -92,8 +109,8 @@ int main() {
 	      size = size*2;
 	      table = rehash(table, size);                              
 	    }
-	  }
-	  */
+	    }*/
+	  
 	}	
       }
 
@@ -116,7 +133,7 @@ int main() {
 	student->printStu();
 	table = add(student, table, size);
 
-	/*
+	
 	int collisions = 1;
 	//Check for collisions in table                                    
 	for (int i = 0; i < size && collisions < 3; i++) {
@@ -136,7 +153,7 @@ int main() {
 	  }
 	  
 	}
-	*/
+	
       }
     }
 
@@ -181,7 +198,8 @@ Student** add(Student* student, Student** table, int size) {
     
     current->next = student;
   }
-    /*
+
+  /*
   //Check and rehash if needed
   if (current == NULL) {
     table[student->hash] = student;
@@ -193,8 +211,15 @@ Student** add(Student* student, Student** table, int size) {
     }
     current->next = student;
   }
-	    */
+
+  if(collisions > 3) {
+    size = size*2;
+    table = rehash(table, size);
+    }*/
+  
   //  cout << "Student added!" << endl;
+
+
   return table;  
 }
 
